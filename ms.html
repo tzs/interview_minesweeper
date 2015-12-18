@@ -3,6 +3,7 @@
 <head>
     <title>Minesweeper</title>
     <script src="ms.js?1"></script>
+    <link rel='StyleSheet' href='ms.css?1' type='text/css'/>
 </head>
 <body onload="init()">
     <table>
@@ -14,5 +15,6 @@
     <p><input type="text" id="cols" value="30">columns</p>
     <p><input type="text" id="mines" value="99">mines</p>
     <p><input type="button" value="New Game" id="reset" onclick="init()"></p>
-    <span id="log"></span>
+    <div id="result"></div>
+    <div id="log"></div>
 </body>

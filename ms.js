@@ -6,11 +6,14 @@ var first_x = -1;
 var first_y = -1;
 var display_built = 0;
 var debug = 0;
+var game_state = 0;
+var settled;
 
 function init()
 {
     var i;
     var els;
+
 
     first_x = -1;
 
@@ -27,6 +30,10 @@ function init()
 
     // empty minefield
     mines = array2d(cols, rows, 0);
+
+    settled = array2d(cols, rows, 0);
+
+    game_state = 1;
 }
 
 function place_mines()
@@ -44,15 +51,20 @@ function place_mines()
             mines[x][y] = 1;
             --to_place;
             if (debug)
-                set_square(x, y, '&#128163;');
+                set_square(x, y, '&#x25CE;');
         }
     }
 }
 
 function clicked(evt)
 {
+    if (game_state == 0)
+        return;
     var id = evt.currentTarget.id;
     var xy = id_to_xy(id);
+
+    if (settled[xy[0]][xy[1]])
+        return;
 
     if (first_x < 0) {
         first_x = xy[0];
@@ -102,17 +114,19 @@ function array2d(cols, rows, val)
 function declare_mine(x,y)
 {
     if (mines[x][y] != 1) {
-        alert("You declared a mine on an empty square. You lose!");
-        init();
+        set_square(x, y, '&#x2205;');
+        set_result("You declared a mine on an empty square. You lose!");
+        game_state = 0;
     } else
-        set_square(x, y, 'M');
+        set_square(x, y, '&#x1F6A9;');
 }
 
 function declare_empty(x,y)
 {
     if (mines[x][y] == 1) {
-        alert("You stepped on a mine! You lose!");
-        init();
+        set_square(x, y, '&#x1F4A3;');
+        set_result("You stepped on a mine! You lose!");
+        game_state = 0;
     } else {
         auto_clear(x, y);
     }
@@ -124,22 +138,21 @@ function auto_clear(x, y)
     var i, j;
     var clear_queue = new Array();
     clear_queue.push([x, y]);
-    var queued = array2d(cols, rows, 0);
-    queued[x][y] = 1;
+    settled[x][y] = 1;
     while (did < clear_queue.length) {
         x = clear_queue[did][0];
         y = clear_queue[did][1];
         var near = count_mines(x,y);
-        set_square(x, y, "" + near);
+        set_square(x, y, near ? "" + near : '&nbsp;');
         if (near == 0) {
             for (i = -1; i < 2; ++i) {
                 for (j = -1; j < 2; ++j) {
                     var nx = x + i;
                     var ny = y + j;
                     if (0 <= nx && nx < cols && 0 <= ny && ny < rows) {
-                        if ( queued[nx][ny] == 0 && mines[nx][ny] == 0) {
+                        if ( settled[nx][ny] == 0 && mines[nx][ny] == 0) {
                             clear_queue.push([nx, ny]);
-                            queued[nx][ny] = 1;
+                            settled[nx][ny] = 1;
                         }
                     }
                 }
@@ -179,6 +192,12 @@ function id_to_xy(id)
 function xy_to_id(x, y)
 {
     return x + "_" + y;
+}
+
+function set_result(txt)
+{
+    var el = document.getElementById('result');
+    el.innerHTML = txt;
 }
 
 function note(txt)
