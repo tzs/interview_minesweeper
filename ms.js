@@ -96,9 +96,9 @@ function auto_clear(x, y)
 {
     var did = 0;
     var i, j;
-    clear_queue = new Array();
+    var clear_queue = new Array();
     clear_queue.push([x, y]);
-    queued = array2d(cols, rows, 0);
+    var queued = array2d(cols, rows, 0);
     queued[x][y] = 1;
     while (did < clear_queue.length) {
         x = clear_queue[did][0];
