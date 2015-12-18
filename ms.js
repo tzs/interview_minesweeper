@@ -108,14 +108,16 @@ function auto_clear(x, y)
         y = clear_queue[did][1];
         var near = count_mines(x,y);
         set_square(x, y, "" + near);
-        for (i = -1; i < 2; ++i) {
-            for (j = -1; j < 2; ++j) {
-                var nx = x + i;
-                var ny = y + j;
-                if (0 <= nx && nx < cols && 0 <= ny && ny < rows) {
-                    if ( queued[nx][ny] == 0 && mines[nx][ny] == 0) {
-                        clear_queue.push([nx, ny]);
-                        queued[nx][ny] = 1;
+        if (near == 0) {
+            for (i = -1; i < 2; ++i) {
+                for (j = -1; j < 2; ++j) {
+                    var nx = x + i;
+                    var ny = y + j;
+                    if (0 <= nx && nx < cols && 0 <= ny && ny < rows) {
+                        if ( queued[nx][ny] == 0 && mines[nx][ny] == 0) {
+                            clear_queue.push([nx, ny]);
+                            queued[nx][ny] = 1;
+                        }
                     }
                 }
             }
