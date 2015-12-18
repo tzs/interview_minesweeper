@@ -8,6 +8,7 @@ var display_built = 0;
 var debug = 0;
 var game_state = 0;
 var settled;
+var mines_flagged = 0;
 
 function init()
 {
@@ -16,6 +17,7 @@ function init()
 
 
     first_x = -1;
+    mines_flagged = 0;
 
     rows = document.getElementById('rows').value;
     cols = document.getElementById('cols').value;
@@ -32,6 +34,8 @@ function init()
     mines = array2d(cols, rows, 0);
 
     settled = array2d(cols, rows, 0);
+
+    set_result('');
 
     game_state = 1;
 }
@@ -115,17 +119,19 @@ function declare_mine(x,y)
 {
     if (mines[x][y] != 1) {
         set_square(x, y, '&#x2205;');
-        set_result("You declared a mine on an empty square. You lose!");
+        set_result("You declared a mine on an empty square. <b>You lose</b>.");
         game_state = 0;
-    } else
+    } else {
         set_square(x, y, '&#x1F6A9;');
+        ++mines_flagged;
+    }
 }
 
 function declare_empty(x,y)
 {
     if (mines[x][y] == 1) {
         set_square(x, y, '&#x1F4A3;');
-        set_result("You stepped on a mine! You lose!");
+        set_result("You stepped on a mine! <b>You lose</b>.");
         game_state = 0;
     } else {
         auto_clear(x, y);
@@ -159,6 +165,17 @@ function auto_clear(x, y)
             }
         }
         ++did;
+    }
+}
+
+function claim()
+{
+    if (game_state == 0)
+        return;
+    if (mines_flagged == num_mines) {
+        set_result("<b>You win!</b>");
+    } else {
+        set_result("Wrong-o, moosebreath. <b>You lose</b>");
     }
 }
 
