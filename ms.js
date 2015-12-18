@@ -9,6 +9,8 @@ function init()
     var i;
     var els;
 
+    build_display(cols, rows);
+
     // clear display
     els = document.getElementsByTagName('td');
     for (i = 0; i < els.length; ++i) {
@@ -35,6 +37,22 @@ function clicked(evt)
         declare_mine(xy[0],xy[1]);
     else
         declare_empty(xy[0],xy[1]);
+}
+
+function build_display(cols, rows)
+{
+    var x, y;
+    var t = document.getElementById('display');
+    for (y = 0; y < rows; ++y) {
+        var tr = document.createElement('tr');
+        for (x = 0; x < cols; ++x) {
+            var td = document.createElement('td');
+            td.setAttribute('id', xy_to_id(x,y));
+            td.addEventListener("click", clicked, false);
+            tr.appendChild(td);
+        }
+        t.appendChild(tr);
+    }
 }
 
 function array2d(cols, rows, val)
