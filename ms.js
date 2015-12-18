@@ -3,13 +3,15 @@ var rows = 16;
 var cols = 30;
 var num_mines = 99;
 var first_click = 1;
+var display_built = 0;
 
 function init()
 {
     var i;
     var els;
 
-    build_display(cols, rows);
+    if (display_built == 0)
+        build_display(cols, rows);
 
     // clear display
     els = document.getElementsByTagName('td');
@@ -53,6 +55,7 @@ function build_display(cols, rows)
         }
         t.appendChild(tr);
     }
+    display_built = 1;
 }
 
 function array2d(cols, rows, val)
