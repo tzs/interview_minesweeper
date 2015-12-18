@@ -1,4 +1,4 @@
-I saw a story on HN about using implementing as much of Minesweeper as you
+I saw a story on HN [1] about using implementing as much of Minesweeper as you
 can in JavaScript in an hour as an interview question. The story said no
 one had every completed it in an hour.
 
@@ -29,3 +29,5 @@ Things needed to make this reasonably playable:
 revealed all the empty squares and announce that they won.
 
 3. Better display.
+
+[1] https://news.ycombinator.com/item?id=10752564
