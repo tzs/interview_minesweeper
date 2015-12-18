@@ -30,4 +30,13 @@ revealed all the empty squares and announce that they won.
 
 3. Better display.
 
+Addendum: as of commit b141ed919347aff219780a0b9233c9bf1c091aea this is
+reasonably playable and looks reasonably not too crappy. The wall
+time between starting and that was about 7.5 hours, but I was doing
+other stuff during that time. Time on this was probably about 4 hours,
+with about an hour of that on non-coding things, mainly testing to see
+if the look and feel was satisfactory, and way too much time in the
+character viewer on my Mac trying to decide what symbols to use to
+mark various cell states.
+
 [1] https://news.ycombinator.com/item?id=10752564
