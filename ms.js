@@ -1,9 +1,8 @@
 var mines;
-var rows = 20;
-var cols = 20;
-var num_mines = 50;
-var clear_queue;
-var cleared;
+var rows = 16;
+var cols = 30;
+var num_mines = 99;
+var first_click = 1;
 
 function init()
 {
@@ -63,12 +62,14 @@ function declare_mine(x,y)
 
 function declare_empty(x,y)
 {
+    if (first_click) {
+        first_click = 0;
+        mines[x][y] = 0;
+    }
     if (mines[x][y] == 1) {
         alert("You stepped on a mine! You lose!");
         init();
     } else {
-        var near = count_mines(x,y);
-        set_square(x, y, "" + near);
         auto_clear(x, y);
     }
 }
@@ -79,21 +80,21 @@ function auto_clear(x, y)
     var i, j;
     clear_queue = new Array();
     clear_queue.push([x, y]);
-    cleared = array2d(cols, rows, 0);
+    queued = array2d(cols, rows, 0);
+    queued[x][y] = 1;
     while (did < clear_queue.length) {
         x = clear_queue[did][0];
         y = clear_queue[did][1];
-        alert("auto_clear " + x + ", " + y);
         var near = count_mines(x,y);
         set_square(x, y, "" + near);
-        cleared[x][y] = 1;
         for (i = -1; i < 2; ++i) {
             for (j = -1; j < 2; ++j) {
                 var nx = x + i;
                 var ny = y + j;
                 if (0 <= nx && nx < cols && 0 <= ny && ny < rows) {
-                    if ( cleared[nx][ny] == 0) {
+                    if ( queued[nx][ny] == 0 && mines[nx][ny] == 0) {
                         clear_queue.push([nx, ny]);
+                        queued[nx][ny] = 1;
                     }
                 }
             }
@@ -125,7 +126,8 @@ function mine_at(x,y)
 
 function id_to_xy(id)
 {
-    return id.split('_');
+    var xy = id.split('_');
+    return [parseInt(xy[0]), parseInt(xy[1])];
 }
 
 function xy_to_id(x, y)
