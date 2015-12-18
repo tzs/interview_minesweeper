@@ -16,7 +16,7 @@ function init()
     // clear display
     els = document.getElementsByTagName('td');
     for (i = 0; i < els.length; ++i) {
-        els[i].innerHTML = '_';
+        els[i].innerHTML = '&#8414;';
     }
 
     // empty minefield
