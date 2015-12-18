@@ -5,6 +5,14 @@
     <script src="ms.js?1"></script>
 </head>
 <body onload="init()">
-    <table id="display">
+    <table>
+        <tbody id="display">
+        </tbody>
     </table>
+    <p><input type="checkbox" id="debug">Debug Flag</p>
+    <p><input type="text" id="rows" value="16">rows</p>
+    <p><input type="text" id="cols" value="30">columns</p>
+    <p><input type="text" id="mines" value="99">mines</p>
+    <p><input type="button" value="New Game" id="reset" onclick="init()"></p>
+    <span id="log"></span>
 </body>

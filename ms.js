@@ -2,16 +2,22 @@ var mines;
 var rows = 16;
 var cols = 30;
 var num_mines = 99;
-var first_click = 1;
+var first_x = -1;
+var first_y = -1;
 var display_built = 0;
+var debug = 0;
 
 function init()
 {
     var i;
     var els;
 
-    if (display_built == 0)
-        build_display(cols, rows);
+    first_x = -1;
+
+    rows = document.getElementById('rows').value;
+    cols = document.getElementById('cols').value;
+
+    build_display(cols, rows);
 
     // clear display
     els = document.getElementsByTagName('td');
@@ -21,12 +27,25 @@ function init()
 
     // empty minefield
     mines = array2d(cols, rows, 0);
+}
 
-    // place mines
-    for (i = 0; i < num_mines; ++i) {
+function place_mines()
+{
+    // note: if num_mines is close to rows*cols, place_mines can be slow
+    debug = document.getElementById('debug').checked;
+    num_mines = document.getElementById('mines').value;
+    if (num_mines > rows*cols-1)
+        num_mines = rows*cols-1;
+    var to_place = num_mines;
+    while (to_place > 0) {
         var x = Math.floor(Math.random() * cols);
         var y = Math.floor(Math.random() * rows);
-        mines[x][y] = 1;
+        if (mines[x][y] != 1 && (x != first_x || y != first_y)) {
+            mines[x][y] = 1;
+            --to_place;
+            if (debug)
+                set_square(x, y, '&#128163;');
+        }
     }
 }
 
@@ -34,6 +53,12 @@ function clicked(evt)
 {
     var id = evt.currentTarget.id;
     var xy = id_to_xy(id);
+
+    if (first_x < 0) {
+        first_x = xy[0];
+        first_y = xy[1];
+        place_mines();
+    }
 
     if (evt.metaKey)
         declare_mine(xy[0],xy[1]);
@@ -44,7 +69,10 @@ function clicked(evt)
 function build_display(cols, rows)
 {
     var x, y;
-    var t = document.getElementById('display');
+    var old_tbody = document.getElementById('display');
+    var new_tbody = document.createElement('tbody');
+    old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
+    new_tbody.setAttribute('id', 'display');
     for (y = 0; y < rows; ++y) {
         var tr = document.createElement('tr');
         for (x = 0; x < cols; ++x) {
@@ -53,9 +81,8 @@ function build_display(cols, rows)
             td.addEventListener("click", clicked, false);
             tr.appendChild(td);
         }
-        t.appendChild(tr);
+        new_tbody.appendChild(tr);
     }
-    display_built = 1;
 }
 
 function array2d(cols, rows, val)
@@ -83,10 +110,6 @@ function declare_mine(x,y)
 
 function declare_empty(x,y)
 {
-    if (first_click) {
-        first_click = 0;
-        mines[x][y] = 0;
-    }
     if (mines[x][y] == 1) {
         alert("You stepped on a mine! You lose!");
         init();
@@ -156,4 +179,10 @@ function id_to_xy(id)
 function xy_to_id(x, y)
 {
     return x + "_" + y;
+}
+
+function note(txt)
+{
+    var el = document.getElementById('log');
+    el.innerHTML += '<br/>' + txt;
 }
