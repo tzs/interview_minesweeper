@@ -64,7 +64,13 @@ function clicked(evt)
 {
     if (game_state == 0)
         return;
-    var id = evt.currentTarget.id;
+    var src = evt.currentTarget;
+    if (! src) {    //IE8 does not have currentTarget
+        src = evt.srcElement;
+        while (src.tagName != "TD")
+            src = src.parentNode;
+    }
+    var id = src.id;
     var xy = id_to_xy(id);
 
     if (settled[xy[0]][xy[1]])
@@ -76,7 +82,7 @@ function clicked(evt)
         place_mines();
     }
 
-    if (evt.metaKey)
+    if (evt.metaKey || evt.altKey || evt.ctrlKey || evt.shiftKey)
         declare_mine(xy[0],xy[1]);
     else
         declare_empty(xy[0],xy[1]);
@@ -94,7 +100,10 @@ function build_display(cols, rows)
         for (x = 0; x < cols; ++x) {
             var td = document.createElement('td');
             td.setAttribute('id', xy_to_id(x,y));
-            td.addEventListener("click", clicked, false);
+            if (td.addEventListener)
+                td.addEventListener("click", clicked, false);
+            else
+                td.attachEvent("onclick", clicked);
             tr.appendChild(td);
         }
         new_tbody.appendChild(tr);
